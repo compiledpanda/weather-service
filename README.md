@@ -11,6 +11,7 @@ Once you’ve coded your project, add it to a publicly accessible Github reposit
 ## Setup & Run
 This project requires Go > 1.22 (as we use the new http Mux matchers and slog)
 
+To run:
 ```sh
 $ export OPEN_WEATHER_MAP_KEY=xxx...
 $ make start

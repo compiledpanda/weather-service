@@ -22,7 +22,12 @@ func main() {
 		OpenWeatherMapKey: os.Getenv("OPEN_WEATHER_MAP_KEY"),
 	}
 
-	// TODO validate config
+	// Validate config
+	// TODO this would ideally be handled in a true config service
+	if c.OpenWeatherMapKey == "" {
+		slog.Error("OPEN_WEATHER_MAP_KEY env variable must be set")
+		os.Exit(1)
+	}
 
 	// Create Server
 	// TODO normally we would create a signal/context to pass through a interrupts for a graceful

@@ -16,7 +16,6 @@ func New(c config.Config) *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// Add endpoints
-	// Our weather endpoint
 	mux.HandleFunc("/v1/conditions", endpoint.NotAllowed())
 	mux.HandleFunc("GET /v1/conditions", endpoint.GetConditions(owm))
 

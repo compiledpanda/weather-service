@@ -16,7 +16,7 @@ type GetConditionsResponse struct {
 	FeelsLike   string  `json:"feelsLike"`
 }
 
-// TODO this should accept an interface to allow for easy unit testing instead of a concrete client
+// TODO this should accept an interface to allow for easy unit testing instead of using a concrete client
 func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Authenticate
