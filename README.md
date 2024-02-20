@@ -16,3 +16,8 @@ To run:
 $ export OPEN_WEATHER_MAP_KEY=xxx...
 $ make start
 ```
+
+To test:
+```sh
+$ make test
+```
