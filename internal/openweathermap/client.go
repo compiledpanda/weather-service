@@ -43,8 +43,6 @@ func (c *Client) GetWeather(lat float64, lon float64) (*WeatherData, error) {
 	params.Set("appid", c.Key)
 	url := "https://api.openweathermap.org/data/2.5/weather?" + params.Encode()
 
-	fmt.Println(url)
-
 	// Call API
 	res, err := c.httpClient.Get(url)
 	if err != nil {
