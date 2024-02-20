@@ -11,6 +11,9 @@ import (
 )
 
 func main() {
+	// Set log level to debug for now
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+
 	// Load Config
 	// TODO this would ideally be wired up to a true config service and pull from
 	// something like a configMap, SSM, a config file, and/or env vars
@@ -18,6 +21,8 @@ func main() {
 		Port:              8080,
 		OpenWeatherMapKey: os.Getenv("OPEN_WEATHER_MAP_KEY"),
 	}
+
+	// TODO validate config
 
 	// Create Server
 	// TODO normally we would create a signal/context to pass through a interrupts for a graceful

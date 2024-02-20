@@ -4,17 +4,19 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/compiledpanda/weatherservice/internal/openweathermap"
 )
 
 type GetConditionsResponse struct {
-	Temperature int    `json:"temperature"`
-	Units       string `json:"units"`
-	Condition   string `json:"condition"`
-	FeelsLike   string `json:"feelsLike"`
+	Temperature float64 `json:"temperature"`
+	Units       string  `json:"units"`
+	Condition   string  `json:"condition"`
+	FeelsLike   string  `json:"feelsLike"`
 }
 
+// TODO this should accept an interface to allow for easy unit testing instead of a concrete client
 func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Authenticate
@@ -37,12 +39,19 @@ func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *
 		}
 
 		// Call OpenWeatherMap
-		// TODO get data and marshal response
-		owm.GetWeather(lat, lon)
+		data, err := owm.GetWeather(lat, lon)
+		if err != nil {
+			returnError(w, http.StatusInternalServerError, "Could Not Get Weather Data")
+			return
+		}
 
 		// Construct Response
-		// TODO
-		res := GetConditionsResponse{}
+		res := GetConditionsResponse{
+			Temperature: data.Main.Temp,
+			Units:       "F",
+			Condition:   getConditions(data.Weather),
+			FeelsLike:   getFeelsLike(data.Main.Temp),
+		}
 
 		returnJSON(w, http.StatusOK, res)
 	}
@@ -84,4 +93,22 @@ func getConditionsGetAndValidateLon(req *http.Request) (float64, error) {
 	}
 
 	return lon, nil
+}
+
+func getConditions(weather []openweathermap.WeatherWeather) string {
+	conditions := []string{}
+	for _, w := range weather {
+		conditions = append(conditions, w.Description)
+	}
+	return strings.Join(conditions, ", ")
+}
+
+func getFeelsLike(temp float64) string {
+	if temp > 80 {
+		return "hot"
+	}
+	if temp < 40 {
+		return "cold"
+	}
+	return "moderate"
 }
