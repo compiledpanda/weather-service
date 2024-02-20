@@ -9,6 +9,8 @@ import (
 	"github.com/compiledpanda/weatherservice/internal/openweathermap"
 )
 
+// TODO I'm definitely not in love with the field names and would want
+// to sync with the team/PM to pick better names :)
 type GetConditionsResponse struct {
 	Temperature float64 `json:"temperature"`
 	Units       string  `json:"units"`

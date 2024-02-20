@@ -17,6 +17,11 @@ $ export OPEN_WEATHER_MAP_KEY=xxx...
 $ make start
 ```
 
+This exposes and endpoint that can be called like so:
+```sh
+$ http 'http://localhost:8080/v1/conditions?lat=40.39&lon=-111.99'
+```
+
 To test:
 ```sh
 $ make test
