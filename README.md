@@ -9,7 +9,7 @@ The API can be found here:https://openweathermap.org/api. Even though most of th
 Once you’ve coded your project, add it to a publicly accessible Github repository and share it with the team.  Additionally, please don’t add your API Key to the project.  Each member of the team reviewing your code has their own key to use for testing your project. 
 
 ## Setup & Run
-This project requires Go > 1.22 (as we use the new http Mux matchers and slog)
+This project requires Go >= 1.22 (as we use the new http Mux matchers and slog)
 
 To run:
 ```sh
