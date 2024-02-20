@@ -35,6 +35,7 @@ func (c *Client) GetWeather(lat float64, lon float64) (*WeatherData, error) {
 	// Marshal query params
 	slog.Debug("Getting Weather", "lat", lat, "lon", lon)
 	params := url.Values{}
+	// TODO we should determine a supported precision and lock in at that :)
 	params.Set("lon", strconv.FormatFloat(lon, 'f', -1, 64))
 	params.Set("lat", strconv.FormatFloat(lat, 'f', -1, 64))
 	params.Set("units", "imperial")
