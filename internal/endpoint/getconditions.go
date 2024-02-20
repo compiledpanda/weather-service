@@ -16,8 +16,7 @@ type GetConditionsResponse struct {
 	FeelsLike   string  `json:"feelsLike"`
 }
 
-// TODO this should accept an interface to allow for easy unit testing instead of using a concrete client
-func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *http.Request) {
+func GetConditions(owm openweathermap.Interface) func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		// Authenticate
 		// TODO this will depend on how we protect our API (via Authorization Header, etc...)
@@ -27,12 +26,12 @@ func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *
 		// (potentially) with what parameters
 
 		// Validate Request
-		lat, err := getConditionsGetAndValidateLat(req)
+		lat, err := getAndValidateLat(req)
 		if err != nil {
 			returnError(w, http.StatusBadRequest, err.Error())
 			return
 		}
-		lon, err := getConditionsGetAndValidateLon(req)
+		lon, err := getAndValidateLon(req)
 		if err != nil {
 			returnError(w, http.StatusBadRequest, err.Error())
 			return
@@ -49,8 +48,8 @@ func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *
 		res := GetConditionsResponse{
 			Temperature: data.Main.Temp,
 			Units:       "F",
-			Condition:   getConditions(data.Weather),
-			FeelsLike:   getFeelsLike(data.Main.Temp),
+			Condition:   formatConditions(data.Weather),
+			FeelsLike:   formatFeelsLike(data.Main.Temp),
 		}
 
 		returnJSON(w, http.StatusOK, res)
@@ -58,7 +57,7 @@ func GetConditions(owm *openweathermap.Client) func(w http.ResponseWriter, req *
 }
 
 // IMPORTANT: error message is passed to the client and MUST be clean
-func getConditionsGetAndValidateLat(req *http.Request) (float64, error) {
+func getAndValidateLat(req *http.Request) (float64, error) {
 	raw := req.URL.Query().Get("lat")
 	if raw == "" {
 		return 0, errors.New("lat query parameter is required")
@@ -77,7 +76,7 @@ func getConditionsGetAndValidateLat(req *http.Request) (float64, error) {
 }
 
 // IMPORTANT: error message is passed to the client and MUST be clean
-func getConditionsGetAndValidateLon(req *http.Request) (float64, error) {
+func getAndValidateLon(req *http.Request) (float64, error) {
 	raw := req.URL.Query().Get("lon")
 	if raw == "" {
 		return 0, errors.New("lon query parameter is required")
@@ -95,7 +94,7 @@ func getConditionsGetAndValidateLon(req *http.Request) (float64, error) {
 	return lon, nil
 }
 
-func getConditions(weather []openweathermap.WeatherWeather) string {
+func formatConditions(weather []openweathermap.WeatherWeather) string {
 	conditions := []string{}
 	for _, w := range weather {
 		conditions = append(conditions, w.Description)
@@ -103,7 +102,7 @@ func getConditions(weather []openweathermap.WeatherWeather) string {
 	return strings.Join(conditions, ", ")
 }
 
-func getFeelsLike(temp float64) string {
+func formatFeelsLike(temp float64) string {
 	if temp > 80 {
 		return "hot"
 	}
