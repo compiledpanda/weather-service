@@ -35,14 +35,17 @@ func (c *Client) GetWeather(lat float64, lon float64) (*WeatherData, error) {
 	// Marshal query params
 	slog.Debug("Getting Weather", "lat", lat, "lon", lon)
 	params := url.Values{}
-	params.Set("lon", strconv.FormatFloat(lon, 'E', -1, 64))
-	params.Set("lat", strconv.FormatFloat(lat, 'E', -1, 64))
+	params.Set("lon", strconv.FormatFloat(lon, 'f', -1, 64))
+	params.Set("lat", strconv.FormatFloat(lat, 'f', -1, 64))
 	params.Set("units", "imperial")
 	params.Set("lang", "en")
 	params.Set("appid", c.Key)
+	url := "https://api.openweathermap.org/data/2.5/weather?" + params.Encode()
+
+	fmt.Println(url)
 
 	// Call API
-	res, err := c.httpClient.Get("https://api.openweathermap.org/data/2.5/weather?" + params.Encode())
+	res, err := c.httpClient.Get(url)
 	if err != nil {
 		slog.Error("Could not get weather", "err", err.Error())
 		return nil, err
